@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Courses</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Add New Courses</h1>
+
+    <form id="addCourseForm">
+      <label for="courseName">Course Name:</label>
+      <input type="text" id="courseName" name="courseName" required />
+
+      <button type="button" onclick="addCourse()">Submit</button>
+      <br />
+      <div id="error-message" style="color: red"></div>
+    </form>
+
+    <br />
+    <a href="../home.html">Return Home</a>
+
+    <script>
+      // Function to add a new course
+      async function addCourse() {
+        const courseName = document.getElementById("courseName").value;
+
+        const payload = { courseName };
+
+        try {
+          const response = await fetch("http://localhost:3000/courses/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          alert("Course added successfully!");
+          document.getElementById("addCourseForm").reset();
+
+          clearErrorMessage();
+        } catch (error) {
+          console.error("Error:", error);
+
+          const errorMessageElement = document.getElementById("error-message");
+
+          clearErrorMessage();
+
+          errorMessageElement.textContent = error.message;
+        }
+      }
+
+      function clearErrorMessage() {
+        const errorMessageElement = document.getElementById("error-message");
+        errorMessageElement.textContent = "";
+      }
+    </script>
+  </body>
+</html>

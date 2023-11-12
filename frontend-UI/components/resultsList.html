@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Results List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Results List</h1>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Student</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTableBody"></tbody>
+    </table>
+    <br />
+    <a href="../home.html">Return Home</a>
+    <script>
+      // Fetching and displaying the list of students
+      fetch("http://localhost:3000/results/list")
+        .then((response) => response.json())
+        .then((results) => {
+          const tableBody = document.getElementById("resultsTableBody");
+
+          results.forEach((result) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${result.courseName}</td>
+            <td>${result.studentName}</td>
+            <td>${result.score}</td>`;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error("Error:", error));
+    </script>
+  </body>
+</html>

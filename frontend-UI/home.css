@@ -1,0 +1,40 @@
+body {
+    background-image: url("images/john-schnobrich-2FPjlAyMQTA-unsplash.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  
+  h1 {
+    font-size: 32px;
+    color: #666;
+  }
+  
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    margin-left: 0px;
+    font-size: 16px;
+    background-color: #f4f3f5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #fcfbfc;
+  }
+
+  li, a {
+    padding: 8px;
+    text-decoration: none;
+    color: #eee; 
+    font-size: 25px;
+  }

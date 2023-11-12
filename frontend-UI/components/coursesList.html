@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courses List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Courses List</h1>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Course Name</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="coursesTableBody"></tbody>
+    </table>
+    <br />
+    <a href="../home.html">Return Home</a>
+    <script>
+      // Fetching and displaying the list of students
+      fetch("http://localhost:3000/courses/list")
+        .then((response) => response.json())
+        .then((courses) => {
+          const tableBody = document.getElementById("coursesTableBody");
+
+          courses.forEach((course) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${course.courseName}</td>
+            <td><button onclick="deleteCourse('${course._id}')">❌</button></td>
+          `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error("Error:", error));
+
+      function deleteCourse(courseId) {
+        // Making a DELETE request
+        fetch(`http://localhost:3000/courses/delete/${courseId}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("Course deleted successfully!");
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>

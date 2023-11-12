@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Result</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Add New Result</h1>
+
+    <form id="addResultForm">
+      <label for="course">Course:</label>
+      <select id="course" name="course">
+        <option value="" disabled selected>Select a course</option>
+      </select>
+
+      <label for="student">Student:</label>
+      <select id="student" name="student">
+        <option value="" disabled selected>Select a student</option>
+      </select>
+
+      <label for="score">Score:</label>
+      <select id="score" name="score">
+        <option value="" disabled selected>Select a score</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+      </select>
+
+      <button type="button" onclick="addResult()">Submit</button>
+      <br />
+      <div id="error-message" style="color: red"></div>
+    </form>
+
+    <br />
+    <a href="../home.html">Return Home</a>
+
+    <script>
+      // Fetching courses and populating the dropdown
+      async function fetchAndPopulateCourses() {
+        const courseDropdown = document.getElementById("course");
+        try {
+          const response = await fetch("http://localhost:3000/courses/list");
+          const courses = await response.json();
+
+          courseDropdown.innerHTML =
+            '<option value="" disabled selected>Select a course</option>';
+
+          courses.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course.courseName;
+            option.textContent = course.courseName;
+            courseDropdown.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      }
+
+      // Fetching students and populating the dropdown
+      async function fetchAndPopulateStudents() {
+        const studentDropdown = document.getElementById("student");
+        try {
+          const response = await fetch("http://localhost:3000/students/list");
+          const students = await response.json();
+
+          studentDropdown.innerHTML =
+            '<option value="" disabled selected>Select a student</option>';
+
+          students.forEach((student) => {
+            const option = document.createElement("option");
+            option.value = `${student.firstName} ${student.lastName}`;
+            option.textContent = `${student.firstName} ${student.lastName}`;
+            studentDropdown.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error fetching students:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchAndPopulateCourses();
+        fetchAndPopulateStudents();
+      });
+
+      // Function to add a new result
+      async function addResult() {
+        const studentName = document.getElementById("student").value;
+        const courseName = document.getElementById("course").value;
+        const score = document.getElementById("score").value;
+
+        const payload = {
+          studentName,
+          courseName,
+          score,
+        };
+
+        try {
+          const response = await fetch("http://localhost:3000/results/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          alert("Result added successfully!");
+          document.getElementById("addResultForm").reset();
+
+          clearErrorMessage();
+        } catch (error) {
+          console.error("Error:", error);
+
+          const errorMessageElement = document.getElementById("error-message");
+
+          clearErrorMessage();
+
+          errorMessageElement.textContent = error.message;
+        }
+      }
+
+      function clearErrorMessage() {
+        const errorMessageElement = document.getElementById("error-message");
+        errorMessageElement.textContent = "";
+      }
+    </script>
+  </body>
+</html>

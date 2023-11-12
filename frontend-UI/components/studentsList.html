@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Students List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Students List</h1>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Name & Family Name</th>
+          <th>DOB</th>
+          <th>Email</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="studentsTableBody"></tbody>
+    </table>
+    <br />
+    <a href="../home.html">Return Home</a>
+    <script>
+      // Fetching and displaying the list of students
+      fetch("http://localhost:3000/students/list")
+        .then((response) => response.json())
+        .then((students) => {
+          const tableBody = document.getElementById("studentsTableBody");
+
+          students.forEach((student) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${student.firstName} ${student.lastName}</td>
+            <td>${new Date(student.dob).toLocaleDateString()}</td>
+            <td>${student.email}</td>
+            <td><button onclick="deleteStudent('${
+              student._id
+            }')">❌</button></td>
+          `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error("Error:", error));
+
+      function deleteStudent(studentId) {
+        // Making a DELETE request
+        fetch(`http://localhost:3000/students/delete/${studentId}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("Student deleted successfully!");
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>
